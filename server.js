@@ -8,11 +8,13 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-const generateFibonacciSequence = ({ count = 10 }) => {
+const generateFibonacciSequence = ({ outputCount, start }) => {
+  const startIndex = start - 1;
+  const countTemplate = start + outputCount;
   const initialSequence = [0, 1];
-  const countTemplate = new Array(count - initialSequence.length).fill(null);
+  const outputCountTemplate = new Array(countTemplate - initialSequence.length).fill(null);
 
-  const initialTemplate = [...initialSequence, ...countTemplate]
+  const initialTemplate = [...initialSequence, ...outputCountTemplate]
   // [0, 1, null, null, null, null, null, null, null, null]
 
   const generatedFibonacciSequence = initialTemplate.map((currentValue, index, arr) => {
@@ -29,14 +31,18 @@ const generateFibonacciSequence = ({ count = 10 }) => {
     return newValue;
   })
 
-  return generatedFibonacciSequence;
+  return generatedFibonacciSequence.slice(startIndex, outputCount + startIndex);
 }
 
-app.get('/', (req, res) => {
-  const count = 10;
-  const generatedFibonacci = generateFibonacciSequence({ count });
+app.get('/fibonacci/create', (req, res) => {
+  const { count, start } = req.query
 
-  res.send('Hello World!')
+  const generatedFibonacci = generateFibonacciSequence({
+    outputCount: Number(count),
+    start: Number(start)
+  });
+
+  res.send(generatedFibonacci).json();
 })
 
 app.listen(4000);
