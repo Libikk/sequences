@@ -14,6 +14,7 @@ const CURRENT_DATE = new Date().getTime();
 
 
 const store = {
+  // extend store for counts
   sequences: [
     {
       idsequenceValue: [2, 3, 5, 8, 13],
